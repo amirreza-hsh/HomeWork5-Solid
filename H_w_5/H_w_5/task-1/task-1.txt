@@ -1,0 +1,67 @@
+﻿1. DIP (Dependency Inversion Principle)
+Definition: DIP is the fifth principle of the SOLID design principles. It states:
+High-level modules should not depend on low-level modules. Both should depend on abstractions (interfaces or abstract classes).
+Abstractions should not depend on details. Details (concrete implementations) should depend on abstractions.
+Purpose: To decouple software modules so that changes in low-level implementations 
+(e.g., swapping a database engine or notification provider) do not force changes in high-level business logic.
+
+2. IoC (Inversion of Control)
+Definition: IoC is a broad architectural design principle in which the control flow of a program is inverted compared to traditional
+procedural programming. Instead of custom application code controlling the execution order and directly instantiating objects, 
+control is handed over to a framework or an external runtime container (often summarized by the Hollywood Principle: “Don’t call us, we’ll call you”).
+Purpose: To modularize code execution and delegate cross-cutting concerns (such as lifecycle management,
+event dispatching, and dependency resolution) to a framework.
+
+3. IoC Container
+Definition: An IoC Container (also known as a DI Container) is a framework, library, or dedicated software component
+that automates the instantiation, configuration, resolution, and lifetime management of objects and their dependencies.
+Examples: Microsoft.Extensions.DependencyInjection (built-in .NET), Autofac, Ninject, Castle Windsor.
+Purpose: To remove the burden of manual object creation (new) and automatic recursive dependency resolution
+across deep object graphs.
+
+4. Factory as IoC Container
+Definition: A design approach where the Factory Pattern (such as Factory Method or Abstract Factory) is utilized as a basic,
+customized mechanism to instantiate and return concrete implementations of abstract interfaces.
+Characteristics:
+Serves as an early or lightweight form of Inversion of Control.
+Unlike modern IoC containers, a custom factory is usually written manually and lacks built-in support for complex
+features such as auto-wiring, scope management, reflection-based resolution, and disposable cleanup tracking.
+
+6. Service Lifetimes in .NET
+In .NET Core / .NET 6+, the built-in IoC container managesthe lifetime and disposal of registered services using three primary lifetime models:
+
+Transient (AddTransient):
+A new instance is created every single time it is requested from the container.
+Best suited for lightweight, stateless services.
+Scoped (AddScoped):
+A single instance is created per lifetime scope (e.g., per HTTP request in ASP.NET Core). 
+All components within the same request share this instance.
+Best suited for stateful operations within a single request, such as Entity Framework DbContext.
+Singleton (AddSingleton):
+A single instance is created the first time it is requested and remains alive for the entire lifespan of the application.
+Best suited for caching services, configuration settings, or thread-safe shared state.
+ Relationships and Interconnection Between the Concepts
+The following diagram and explanation illustrate how these concepts connect from high-level theory down to practical runtime implementation:
+
+
+[ DIP ]         --> The Architectural Principle (SOLID)
+   │
+   ▼
+[ IoC ]         --> The Conceptual Pattern (Inverting Control)
+   │
+   ▼
+[ DI ]          --> The Implementation Technique (Supplying Dependencies)
+   │
+   ▼
+[ IoC Container / Factory ]  --> The Automation Tool / Mechanism (Resolving & Creating Objects)
+   │
+   ▼
+[ Service Lifetimes (.NET) ] --> The Runtime Policy (Managing Object Scope & Destruction)
+Step-by-Step Connection:
+1.DIP sets the architectural rule: classes must depend on abstractions rather than concrete classes.
+2.To satisfy DIP without tight coupling, we apply IoC, taking away the responsibility of object instantiation from the consuming classes.
+3.DI is the concrete pattern that achieves IoC by injecting those abstractions through constructors or setters.
+4.As projects grow, manually wiring up DI becomes unsustainable. An IoC Container 
+(or an early manual Factory) acts as the central engine that automatically resolves and provides the required dependencies.
+5.Finally, the IoC Container relies on Service Lifetimes (Transient, Scoped, Singleton)
+to determine how instances are allocated, reused, and disposed of during the application runtime.
